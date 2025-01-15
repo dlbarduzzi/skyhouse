@@ -1,7 +1,10 @@
 package main
 
-import "fmt"
+import (
+	"github.com/dlbarduzzi/skyhouse/internal/logging"
+)
 
 func main() {
-	fmt.Println("Hello, skyhouse!")
+	logger := logging.NewLoggerFromEnv().With("app", "skyhouse")
+	logger.Info("running application")
 }
