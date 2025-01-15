@@ -5,6 +5,8 @@ import (
 	"os"
 
 	"github.com/dlbarduzzi/skyhouse/internal/logging"
+	"github.com/dlbarduzzi/skyhouse/internal/server"
+	"github.com/dlbarduzzi/skyhouse/internal/skyhouse"
 )
 
 func main() {
@@ -21,6 +23,17 @@ func main() {
 
 func start(ctx context.Context) error {
 	logger := logging.LoggerFromContext(ctx)
-	logger.Info("starting application")
-	return nil
+
+	app, err := skyhouse.NewSkyhouse(logger)
+	if err != nil {
+		return err
+	}
+
+	srv := server.NewServer(app.Port(), logger)
+
+	srv.RunBeforeShutdown(func() {
+		app.Shutdown()
+	})
+
+	return srv.Start(ctx, app.Routes())
 }
