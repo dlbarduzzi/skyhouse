@@ -8,7 +8,7 @@ import (
 func Marshal(w http.ResponseWriter, data interface{}, code int, headers http.Header) error {
 	res, err := json.Marshal(data)
 	if err != nil {
-		return nil
+		return err
 	}
 
 	res = append(res, '\n')
