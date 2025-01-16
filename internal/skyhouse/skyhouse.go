@@ -7,20 +7,25 @@ import (
 )
 
 type Skyhouse struct {
+	config *Config
 	logger *slog.Logger
 	wg     *sync.WaitGroup
 }
 
-func NewSkyhouse(logger *slog.Logger) (*Skyhouse, error) {
+func NewSkyhouse(config *Config, logger *slog.Logger) (*Skyhouse, error) {
+	cfg, err := config.parse()
+	if err != nil {
+		return nil, err
+	}
 	return &Skyhouse{
+		config: cfg,
 		logger: logger,
 		wg:     &sync.WaitGroup{},
 	}, nil
 }
 
-// TODO: Get port from config.
 func (s *Skyhouse) Port() int {
-	return 8000
+	return s.config.Port
 }
 
 func (s *Skyhouse) Shutdown() {

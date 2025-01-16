@@ -24,7 +24,9 @@ func main() {
 func start(ctx context.Context) error {
 	logger := logging.LoggerFromContext(ctx)
 
-	app, err := skyhouse.NewSkyhouse(logger)
+	appConfig := setSkyhouseConfig()
+
+	app, err := skyhouse.NewSkyhouse(appConfig, logger)
 	if err != nil {
 		return err
 	}
@@ -36,4 +38,11 @@ func start(ctx context.Context) error {
 	})
 
 	return srv.Start(ctx, app.Routes())
+}
+
+// TODO: Get port number from config.
+func setSkyhouseConfig() *skyhouse.Config {
+	return &skyhouse.Config{
+		Port: 8000,
+	}
 }
