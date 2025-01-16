@@ -19,7 +19,7 @@ func (s *Skyhouse) healthHandler(w http.ResponseWriter, r *http.Request) {
 
 	res := healthResponse{
 		Code:    http.StatusOK,
-		Message: "API is healthy. NEW",
+		Message: "API is healthy.",
 	}
 
 	if err := jsontil.Marshal(w, res, res.Code, nil); err != nil {
