@@ -10,8 +10,7 @@ func TestHealthHandler(t *testing.T) {
 	t.Parallel()
 
 	app := newTestSkyhouse(t)
-	srv := newTestServer(t, app.Routes())
-	defer srv.Close()
+	srv := newTestServer(t, app.healthHandler)
 
 	code, body := srv.get(t, "/api/v1/health")
 	if code != http.StatusOK {

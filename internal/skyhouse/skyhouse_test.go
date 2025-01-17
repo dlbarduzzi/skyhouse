@@ -17,28 +17,25 @@ func newTestSkyhouse(t *testing.T) *Skyhouse {
 }
 
 type testServer struct {
-	*httptest.Server
+	http.HandlerFunc
 }
 
-func newTestServer(t *testing.T, h http.Handler) *testServer {
+func newTestServer(t *testing.T, h http.HandlerFunc) *testServer {
 	t.Helper()
-	srv := httptest.NewServer(h)
-	return &testServer{srv}
+	return &testServer{h}
 }
 
-func (s *testServer) get(t *testing.T, path string) (int, string) {
-	res, err := s.Client().Get(s.URL + path)
+func (s *testServer) get(t *testing.T, url string) (int, string) {
+	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	defer res.Body.Close()
+	w := httptest.NewRecorder()
+	s.ServeHTTP(w, req)
 
-	body, err := io.ReadAll(res.Body)
-	if err != nil {
-		t.Fatal(err)
-	}
+	code := w.Result().StatusCode
+	body := string(bytes.TrimSpace(w.Body.Bytes()))
 
-	body = bytes.TrimSpace(body)
-	return res.StatusCode, string(body)
+	return code, body
 }
